@@ -1,4 +1,5 @@
 :root, body, #root {
+  background-color: var(--mui-palette-common-background);
   height: 100%;
   margin: 0;
   padding: 0;
