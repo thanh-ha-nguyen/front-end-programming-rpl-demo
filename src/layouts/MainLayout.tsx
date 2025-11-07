@@ -9,33 +9,47 @@ import MenuItem from "@mui/material/MenuItem";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import React from "react";
-import { Outlet } from "react-router";
+import { Link, Outlet, useNavigate } from "react-router";
 
-const pages = ["Customers", "Trainings"];
+const pages = [
+  { title: "Customers", path: "/customers" },
+  { title: "Trainings", path: "/trainings" },
+];
 
 function MainLayout() {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null
   );
+  const navigate = useNavigate();
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
   };
 
-  const handleCloseNavMenu = () => {
+  const handleCloseNavMenu = (path?: string) => () => {
     setAnchorElNav(null);
+    if (path) {
+      navigate(path);
+    }
   };
 
   return (
-    <Container maxWidth="md">
+    <Container
+      maxWidth="md"
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        height: "100%",
+      }}
+    >
       <AppBar position="static">
         <Container>
           <Toolbar disableGutters>
             <Typography
               variant="h6"
               noWrap
-              component="a"
-              href="#app-bar-with-responsive-menu"
+              component={Link}
+              to="/"
               sx={{
                 mr: 2,
                 display: { xs: "none", md: "flex" },
@@ -73,12 +87,14 @@ function MainLayout() {
                   horizontal: "left",
                 }}
                 open={Boolean(anchorElNav)}
-                onClose={handleCloseNavMenu}
+                onClose={handleCloseNavMenu()}
                 sx={{ display: { xs: "block", md: "none" } }}
               >
                 {pages.map((page, index) => (
-                  <MenuItem key={index} onClick={handleCloseNavMenu}>
-                    <Typography sx={{ textAlign: "center" }}>{page}</Typography>
+                  <MenuItem key={index} onClick={handleCloseNavMenu(page.path)}>
+                    <Typography sx={{ textAlign: "center" }}>
+                      {page.title}
+                    </Typography>
                   </MenuItem>
                 ))}
               </Menu>
@@ -105,17 +121,17 @@ function MainLayout() {
               {pages.map((page, index) => (
                 <Button
                   key={index}
-                  onClick={handleCloseNavMenu}
+                  onClick={handleCloseNavMenu(page.path)}
                   sx={{ my: 2, color: "white", display: "block" }}
                 >
-                  {page}
+                  {page.title}
                 </Button>
               ))}
             </Box>
           </Toolbar>
         </Container>
       </AppBar>
-      <Container>
+      <Container sx={{ flexGrow: 1 }}>
         <Outlet />
       </Container>
     </Container>
