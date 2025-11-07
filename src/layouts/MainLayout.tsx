@@ -60,7 +60,7 @@ function MainLayout() {
                 textDecoration: "none",
               }}
             >
-              RPL DEMO
+              TRAINER APP
             </Typography>
 
             <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
@@ -115,7 +115,7 @@ function MainLayout() {
                 textDecoration: "none",
               }}
             >
-              RPL DEMO
+              TRAINER APP
             </Typography>
             <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
               {pages.map((page, index) => (
@@ -131,7 +131,7 @@ function MainLayout() {
           </Toolbar>
         </Container>
       </AppBar>
-      <Container sx={{ flexGrow: 1 }}>
+      <Container sx={{ flexGrow: 1, my: 1 }}>
         <Outlet />
       </Container>
     </Container>
