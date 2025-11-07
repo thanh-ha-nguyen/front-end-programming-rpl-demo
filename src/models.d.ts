@@ -3,6 +3,7 @@ interface Entity {
 }
 
 interface Customer {
+  avatarurl?: string;
   firstname: string;
   lastname: string;
   streetaddress: string;
