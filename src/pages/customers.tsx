@@ -1,52 +1,29 @@
 import AddIcon from "@mui/icons-material/Add";
 import SearchIcon from "@mui/icons-material/Search";
+import SortIcon from "@mui/icons-material/Sort";
 import Box from "@mui/material/Box";
-import IconButton from "@mui/material/IconButton";
 import Fab from "@mui/material/Fab";
+import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
 import OutlinedInput from "@mui/material/OutlinedInput";
-import SortIcon from "@mui/icons-material/Sort";
 import type React from "react";
-import { useCallback, useState, useTransition } from "react";
+import { useCallback, useEffect, useState, useTransition } from "react";
 import CustomersList from "../components/CustomersList";
-
-const initialCustomers = [
-  {
-    id: 1087,
-    firstname: "John",
-    lastname: "Johnson",
-    streetaddress: "5th Street",
-    postcode: "23110",
-    city: "Flintsone",
-    email: "john@mail.com",
-    phone: "232-2345540",
-  },
-  {
-    id: 1088,
-    firstname: "Ha",
-    lastname: "Nguyen",
-    streetaddress: "5th Street",
-    postcode: "23110",
-    city: "Flintsone",
-    email: "hanguyen@mail.com",
-    phone: "232-1234567",
-  },
-  {
-    id: 1089,
-    firstname: "Sherlock",
-    lastname: "Holmes",
-    streetaddress: "5th Street",
-    postcode: "23110",
-    city: "Flintsone",
-    email: "sherloc@mail.com",
-    phone: "232-7654321",
-  },
-];
+import { loadCustomers } from "../services";
 
 function CustomersPage() {
   const [, startTransition] = useTransition();
-  const [customers, setCustomers] = useState(initialCustomers);
+  const [customers, setCustomers] = useState<Array<CustomerEntity>>([]);
+  const [search, setSearch] = useState("");
   const [filteredCustomers, setFilteredCustomers] = useState(customers);
+
+  useEffect(() => {
+    startTransition(async () => {
+      const customers = await loadCustomers();
+      setCustomers(customers);
+      setFilteredCustomers(customers);
+    });
+  }, []);
 
   const onSort = useCallback(() => {
     startTransition(() =>
@@ -60,29 +37,26 @@ function CustomersPage() {
     );
   }, []);
 
-  const onSearchChange = useCallback(
-    (search: string) => {
-      startTransition(() =>
-        setFilteredCustomers(
-          search.trim().length === 0
-            ? initialCustomers
-            : customers.filter((customer) =>
-                search
-                  .split(/\s+/)
-                  .filter(searchTerm => searchTerm.length > 0)
-                  .some(
-                    (searchTerm) =>
-                      customer.firstname?.toLowerCase().startsWith(searchTerm) ||
-                      customer.lastname?.toLowerCase().startsWith(searchTerm) ||
-                      customer.email?.toLowerCase().includes(searchTerm) ||
-                      customer.phone?.toLowerCase().includes(searchTerm)
-                  )
-              )
-        )
-      );
-    },
-    [customers]
-  );
+  useEffect(() => {
+    startTransition(() =>
+      setFilteredCustomers(
+        search.trim().length === 0
+          ? customers
+          : customers.filter((customer) =>
+              search
+                .split(/\s+/)
+                .filter((searchTerm) => searchTerm.length > 0)
+                .some(
+                  (searchTerm) =>
+                    customer.firstname?.toLowerCase().startsWith(searchTerm) ||
+                    customer.lastname?.toLowerCase().startsWith(searchTerm) ||
+                    customer.email?.toLowerCase().includes(searchTerm) ||
+                    customer.phone?.toLowerCase().includes(searchTerm)
+                )
+            )
+      )
+    );
+  }, [search, customers]);
 
   return (
     <Box
@@ -93,7 +67,7 @@ function CustomersPage() {
         flexDirection: "column",
       }}
     >
-      <Toolbar onSearchChange={onSearchChange} onSort={onSort} />
+      <Toolbar search={search} onSearchChange={setSearch} onSort={onSort} />
       <CustomersList customers={filteredCustomers} />
       <Fab
         color="primary"
@@ -113,15 +87,18 @@ function CustomersPage() {
 export default CustomersPage;
 
 interface ToolbarProps {
+  search: string;
   onSearchChange: (search: string) => unknown;
   onSort: () => unknown;
 }
 
-const Toolbar: React.FC<ToolbarProps> = ({ onSearchChange, onSort }) => {
-  const [search, setSearch] = useState("");
+const Toolbar: React.FC<ToolbarProps> = ({
+  search,
+  onSearchChange,
+  onSort,
+}) => {
   const onChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      setSearch(e.target.value);
       onSearchChange(e.target.value);
     },
     [onSearchChange]

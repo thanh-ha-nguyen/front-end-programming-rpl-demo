@@ -15,7 +15,7 @@ const CustomersList: React.FC<CustomersListProps> = ({ customers = [] }) => {
   const navigate = useNavigate();
 
   return (
-    <Paper sx={{ height: "100%" }}>
+    <Paper sx={{ height: "100%", overflow: "auto" }}>
       <List>
         {customers.map(
           ({ id, avatarurl, firstname, lastname, email, phone }) => (
