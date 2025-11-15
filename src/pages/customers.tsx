@@ -7,7 +7,7 @@ import InputAdornment from "@mui/material/InputAdornment";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import SortIcon from "@mui/icons-material/Sort";
 import type React from "react";
-import { useCallback, useState } from "react";
+import { useCallback, useState, useTransition } from "react";
 import CustomersList from "../components/CustomersList";
 
 const initialCustomers = [
@@ -44,15 +44,18 @@ const initialCustomers = [
 ];
 
 function CustomersPage() {
+  const [, startTransition] = useTransition();
   const [search, setSearch] = useState("");
   const [customers, setCustomers] = useState(initialCustomers);
   const onSort = useCallback(() => {
-    setCustomers((customers) =>
-      customers.slice(0).sort((first, second) => {
-        const firstFullName = `${first.firstname} ${first.lastname}`;
-        const secondFullName = `${second.firstname} ${second.lastname}`;
-        return firstFullName.localeCompare(secondFullName);
-      })
+    startTransition(() =>
+      setCustomers((customers) =>
+        customers.slice(0).sort((first, second) => {
+          const firstFullName = `${first.firstname} ${first.lastname}`;
+          const secondFullName = `${second.firstname} ${second.lastname}`;
+          return firstFullName.localeCompare(secondFullName);
+        })
+      )
     );
   }, [setCustomers]);
 
