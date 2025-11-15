@@ -28,8 +28,8 @@ const initialCustomers = [
     streetaddress: "5th Street",
     postcode: "23110",
     city: "Flintsone",
-    email: "john@mail.com",
-    phone: "232-2345540",
+    email: "hanguyen@mail.com",
+    phone: "232-1234567",
   },
   {
     id: 1089,
@@ -38,15 +38,16 @@ const initialCustomers = [
     streetaddress: "5th Street",
     postcode: "23110",
     city: "Flintsone",
-    email: "john@mail.com",
-    phone: "232-2345540",
+    email: "sherloc@mail.com",
+    phone: "232-7654321",
   },
 ];
 
 function CustomersPage() {
   const [, startTransition] = useTransition();
-  const [search, setSearch] = useState("");
   const [customers, setCustomers] = useState(initialCustomers);
+  const [filteredCustomers, setFilteredCustomers] = useState(customers);
+
   const onSort = useCallback(() => {
     startTransition(() =>
       setCustomers((customers) =>
@@ -57,7 +58,31 @@ function CustomersPage() {
         })
       )
     );
-  }, [setCustomers]);
+  }, []);
+
+  const onSearchChange = useCallback(
+    (search: string) => {
+      startTransition(() =>
+        setFilteredCustomers(
+          search.trim().length === 0
+            ? initialCustomers
+            : customers.filter((customer) =>
+                search
+                  .split(/\s+/)
+                  .filter(searchTerm => searchTerm.length > 0)
+                  .some(
+                    (searchTerm) =>
+                      customer.firstname?.toLowerCase().startsWith(searchTerm) ||
+                      customer.lastname?.toLowerCase().startsWith(searchTerm) ||
+                      customer.email?.toLowerCase().includes(searchTerm) ||
+                      customer.phone?.toLowerCase().includes(searchTerm)
+                  )
+              )
+        )
+      );
+    },
+    [customers]
+  );
 
   return (
     <Box
@@ -68,8 +93,8 @@ function CustomersPage() {
         flexDirection: "column",
       }}
     >
-      <Toolbar search={search} onSearchChange={setSearch} onSort={onSort} />
-      <CustomersList customers={customers} />
+      <Toolbar onSearchChange={onSearchChange} onSort={onSort} />
+      <CustomersList customers={filteredCustomers} />
       <Fab
         color="primary"
         sx={{
@@ -88,18 +113,15 @@ function CustomersPage() {
 export default CustomersPage;
 
 interface ToolbarProps {
-  search: string;
   onSearchChange: (search: string) => unknown;
   onSort: () => unknown;
 }
 
-const Toolbar: React.FC<ToolbarProps> = ({
-  search,
-  onSearchChange,
-  onSort,
-}) => {
+const Toolbar: React.FC<ToolbarProps> = ({ onSearchChange, onSort }) => {
+  const [search, setSearch] = useState("");
   const onChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
+      setSearch(e.target.value);
       onSearchChange(e.target.value);
     },
     [onSearchChange]
@@ -119,6 +141,7 @@ const Toolbar: React.FC<ToolbarProps> = ({
       }}
     >
       <OutlinedInput
+        autoComplete="off"
         endAdornment={
           <InputAdornment position="end">
             <SearchIcon />
