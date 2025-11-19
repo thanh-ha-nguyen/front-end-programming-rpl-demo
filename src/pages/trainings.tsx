@@ -1,5 +1,9 @@
+import NotImplemented from "../components/NotImplemented";
+
 function TrainingsPage() {
-  return "TrainingsPage"
+  return (
+    <NotImplemented />
+  );
 }
 
 export default TrainingsPage;
