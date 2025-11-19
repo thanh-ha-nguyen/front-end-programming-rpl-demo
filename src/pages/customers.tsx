@@ -9,9 +9,12 @@ import OutlinedInput from "@mui/material/OutlinedInput";
 import type React from "react";
 import { useCallback, useEffect, useState, useTransition } from "react";
 import CustomersList from "../components/CustomersList";
+import { useAppPageContextValue } from "../contexts/AppPageContext";
 import { loadCustomers } from "../services";
 
 function CustomersPage() {
+  useAppPageContextValue({ title: "CUSTOMERS" });
+
   const [, startTransition] = useTransition();
   const [customers, setCustomers] = useState<Array<CustomerEntity>>([]);
   const [search, setSearch] = useState("");
