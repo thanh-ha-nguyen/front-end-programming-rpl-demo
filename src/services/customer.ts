@@ -1,4 +1,4 @@
-interface CustomersResponseJson {
+interface LoadCustomersResponseJson {
   _embedded: {
     customers: Array<
       Customer & {
@@ -19,7 +19,7 @@ export async function loadCustomers(): Promise<Array<CustomerEntity>> {
   if (!response.ok) {
     throw new Error(await response.text());
   }
-  const json: CustomersResponseJson = await response.json();
+  const json: LoadCustomersResponseJson = await response.json();
   return json._embedded.customers.map((customer) => {
     const id = Number(/\/(\d+)$/.exec(customer._links.self.href)![1]);
     return {
@@ -27,4 +27,14 @@ export async function loadCustomers(): Promise<Array<CustomerEntity>> {
       id,
     };
   });
+}
+
+export async function loadCustomerById(id: number): Promise<CustomerEntity> {
+  const response = await fetch(
+    `${import.meta.env.VITE_CUSTOMERS_API_BASE_URL}/customers/${id}`
+  );
+  if (!response.ok) {
+    throw new Error(await response.text());
+  }
+  return await response.json();
 }

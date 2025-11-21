@@ -1,6 +1,6 @@
 import ArrowBack from "@mui/icons-material/ArrowBack";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
-import PersonIcon from '@mui/icons-material/Person';
+import PersonIcon from "@mui/icons-material/Person";
 import SaveIcon from "@mui/icons-material/Save";
 import Box from "@mui/material/Box";
 import Fab from "@mui/material/Fab";
@@ -11,10 +11,7 @@ function CustomerDetailsLayout() {
   const { id } = useParams();
   useAppPageContextValue({ title: `CUSTOMER ${id}` });
   const navigate = useNavigate();
-  const isInTrainingView = !!useMatch({
-    path: `/customers/${id}/trainings`,
-    end: true,
-  });
+  const isInTrainingView = !!useMatch("/customers/:id/trainings/*");
 
   return (
     <Box sx={{ position: "relative", height: "100%" }}>

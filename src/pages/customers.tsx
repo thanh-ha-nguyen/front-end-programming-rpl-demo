@@ -7,60 +7,17 @@ import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import type React from "react";
-import { useCallback, useEffect, useState, useTransition } from "react";
+import { useCallback, useState } from "react";
 import CustomersList from "../components/CustomersList";
 import { useAppPageContextValue } from "../contexts/AppPageContext";
-import { loadCustomers } from "../services";
+import { useCustomers } from "../hooks";
 
 function CustomersPage() {
   useAppPageContextValue({ title: "CUSTOMERS" });
 
-  const [, startTransition] = useTransition();
-  const [customers, setCustomers] = useState<Array<CustomerEntity>>([]);
   const [search, setSearch] = useState("");
-  const [filteredCustomers, setFilteredCustomers] = useState(customers);
-
-  useEffect(() => {
-    startTransition(async () => {
-      const customers = await loadCustomers();
-      setCustomers(customers);
-      setFilteredCustomers(customers);
-    });
-  }, []);
-
-  const onSort = useCallback(() => {
-    startTransition(() =>
-      setCustomers((customers) =>
-        customers.slice(0).sort((first, second) => {
-          const firstFullName = `${first.firstname} ${first.lastname}`;
-          const secondFullName = `${second.firstname} ${second.lastname}`;
-          return firstFullName.localeCompare(secondFullName);
-        })
-      )
-    );
-  }, []);
-
-  useEffect(() => {
-    startTransition(() =>
-      setFilteredCustomers(
-        search.trim().length === 0
-          ? customers
-          : customers.filter((customer) =>
-              search
-                .split(/\s+/)
-                .filter((searchTerm) => searchTerm.length > 0)
-                .some(
-                  (searchTerm) =>
-                    customer.firstname?.toLowerCase().startsWith(searchTerm) ||
-                    customer.lastname?.toLowerCase().startsWith(searchTerm) ||
-                    customer.email?.toLowerCase().includes(searchTerm) ||
-                    customer.phone?.toLowerCase().includes(searchTerm)
-                )
-            )
-      )
-    );
-  }, [search, customers]);
-
+  const [customers, onSort] = useCustomers(search);
+  
   return (
     <Box
       sx={{
@@ -71,7 +28,7 @@ function CustomersPage() {
       }}
     >
       <Toolbar search={search} onSearchChange={setSearch} onSort={onSort} />
-      <CustomersList customers={filteredCustomers} />
+      <CustomersList customers={customers} />
       <Fab
         color="primary"
         sx={{
