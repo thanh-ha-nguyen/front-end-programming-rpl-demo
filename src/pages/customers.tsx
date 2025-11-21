@@ -6,6 +6,7 @@ import Fab from "@mui/material/Fab";
 import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
 import OutlinedInput from "@mui/material/OutlinedInput";
+import Paper from "@mui/material/Paper";
 import type React from "react";
 import { useCallback, useState } from "react";
 import CustomersList from "../components/CustomersList";
@@ -17,18 +18,31 @@ function CustomersPage() {
 
   const [search, setSearch] = useState("");
   const [customers, onSort] = useCustomers(search);
-  
+
   return (
     <Box
       sx={{
-        position: "relative",
         height: "100%",
         display: "flex",
         flexDirection: "column",
+        position: "relative",
       }}
     >
       <Toolbar search={search} onSearchChange={setSearch} onSort={onSort} />
-      <CustomersList customers={customers} />
+      <Box sx={{ flexGrow: 1, position: "relative" }}>
+        <Paper
+          sx={{
+            position: "absolute",
+            left: 0,
+            top: 0,
+            right: 0,
+            bottom: 0,
+            overflow: "auto",
+          }}
+        >
+          <CustomersList customers={customers} />
+        </Paper>
+      </Box>
       <Fab
         color="primary"
         sx={{

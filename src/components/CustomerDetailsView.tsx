@@ -2,9 +2,10 @@ import Box from "@mui/material/Box";
 import FormControl from "@mui/material/FormControl";
 import Input from "@mui/material/Input";
 import InputLabel from "@mui/material/InputLabel";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { useParams } from "react-router";
 import { useAppPageContextValue } from "../contexts/AppPageContext";
+import { useCustomerById } from "../hooks";
 
 function CustomerDetailsView() {
   const { id } = useParams();
@@ -16,6 +17,17 @@ function CustomerDetailsView() {
   const [streetAddress, setStreetAddress] = useState("");
   const [city, setCity] = useState("");
   const [postalCode, setPostalCode] = useState("");
+  
+  const onLoaded = useCallback((customer: CustomerEntity) => {
+    setFirstName(customer.city);
+    setLastName(customer.lastname);
+    setEmail(customer.email);
+    setPhone(customer.phone);
+    setStreetAddress(customer.streetaddress);
+    setCity(customer.city);
+    setPostalCode(customer.postcode);
+  }, []);
+  useCustomerById(Number(id), onLoaded);
 
   return (
     <Box

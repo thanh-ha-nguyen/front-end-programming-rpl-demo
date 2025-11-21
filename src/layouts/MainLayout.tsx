@@ -29,8 +29,6 @@ const pages = [
 ];
 
 function MainLayout() {
-  
-
   return (
     <AppPageContextProvider>
       <ThemeProvider theme={theme}>
@@ -42,10 +40,11 @@ function MainLayout() {
             display: "flex",
             flexDirection: "column",
             height: "100%",
+            overflow: "hidden",
           }}
         >
           <DefaultAppBar />
-          <Container sx={{ flexGrow: 1, my: 1, overflow: "hidden" }}>
+          <Container sx={{ flexGrow: 1, my: 1 }}>
             <Outlet />
           </Container>
         </Container>

@@ -15,11 +15,13 @@ function CustomerDetailsLayout() {
 
   return (
     <Box sx={{ position: "relative", height: "100%" }}>
-      <Outlet />
+      <Box sx={{ mt: 2 }}>
+        <Outlet />
+      </Box>
       <Box
         sx={{
           position: "absolute",
-          bottom: 1,
+          bottom: "calc(2 * var(--mui-spacing))",
           left: "50%",
           transform: "translateX(-50%)",
           zIndex: "var(--mui-zIndex-fab)",
