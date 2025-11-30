@@ -11,12 +11,9 @@ import type React from "react";
 import { useCallback, useState } from "react";
 import { useNavigate } from "react-router";
 import CustomersList from "../components/CustomersList";
-import { useAppPageContextValue } from "../contexts/AppPageContext";
 import { useCustomers } from "../hooks";
 
 function CustomersPage() {
-  useAppPageContextValue({ title: "CUSTOMERS" });
-
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const [customers, onSort] = useCustomers(search);

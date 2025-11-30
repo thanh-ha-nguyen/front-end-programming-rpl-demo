@@ -12,9 +12,6 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import React from "react";
 import { Link, Outlet, useNavigate } from "react-router";
-import AppPageContextProvider, {
-  useAppPageContext,
-} from "../contexts/AppPageContext";
 
 const theme = createTheme({
   colorSchemes: {
@@ -30,26 +27,24 @@ const pages = [
 
 function MainLayout() {
   return (
-    <AppPageContextProvider>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <Container
-          maxWidth="md"
-          disableGutters
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            height: "100%",
-            overflow: "hidden",
-          }}
-        >
-          <DefaultAppBar />
-          <Container sx={{ flexGrow: 1, my: 1 }}>
-            <Outlet />
-          </Container>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <Container
+        maxWidth="md"
+        disableGutters
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          height: "100%",
+          overflow: "hidden",
+        }}
+      >
+        <DefaultAppBar />
+        <Container sx={{ flexGrow: 1, my: 1 }}>
+          <Outlet />
         </Container>
-      </ThemeProvider>
-    </AppPageContextProvider>
+      </Container>
+    </ThemeProvider>
   );
 }
 
@@ -57,7 +52,6 @@ export default MainLayout;
 
 const DefaultAppBar = () => {
   const navigate = useNavigate();
-  const { title } = useAppPageContext();
 
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null
@@ -146,7 +140,7 @@ const DefaultAppBar = () => {
               textDecoration: "none",
             }}
           >
-            {title || "TRAINER APP"}
+            TRAINER APP
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             {pages.map((page, index) => (

@@ -5,7 +5,6 @@ import CustomerDetailsPage from "./pages/customerDetails";
 import CustomersPage from "./pages/customers";
 import HomePage from "./pages/home";
 import NewCustomerDetailsPage from "./pages/newCustomerDetails";
-import TrainingsPage from "./pages/trainings";
 
 function App() {
   return (
@@ -19,7 +18,7 @@ function App() {
             <Route index Component={CustomerDetailsPage} />
             <Route path="trainings" Component={NotImplemented} />
           </Route>
-          <Route path="trainings" Component={TrainingsPage} />
+          <Route path="trainings" Component={NotImplemented} />
         </Route>
       </Routes>
     </HashRouter>

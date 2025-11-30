@@ -9,12 +9,10 @@ import Input from "@mui/material/Input";
 import InputLabel from "@mui/material/InputLabel";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
-import { useAppPageContextValue } from "../contexts/AppPageContext";
 import { useCustomerById } from "../hooks";
 
 function CustomerDetailsPage() {
   const { id } = useParams();
-  useAppPageContextValue({ title: `CUSTOMER ${id}` });
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
