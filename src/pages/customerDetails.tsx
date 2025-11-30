@@ -1,14 +1,20 @@
 import ArrowBack from "@mui/icons-material/ArrowBack";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
-import DeleteIcon from '@mui/icons-material/Delete';
+import DeleteIcon from "@mui/icons-material/Delete";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import SaveIcon from "@mui/icons-material/Save";
 import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
 import Fab from "@mui/material/Fab";
 import FormControl from "@mui/material/FormControl";
 import Input from "@mui/material/Input";
 import InputLabel from "@mui/material/InputLabel";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { useCustomerById } from "../hooks";
 
@@ -21,6 +27,14 @@ function CustomerDetailsPage() {
   const [streetAddress, setStreetAddress] = useState("");
   const [city, setCity] = useState("");
   const [postalCode, setPostalCode] = useState("");
+
+  const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
+  const handleOpenDeleteConfirmationDialog = useCallback(() => {
+    setDeleteConfirmationOpen(true);
+  }, []);
+  const handleCloseDeleteConfirmationDialog = useCallback(() => {
+    setDeleteConfirmationOpen(false);
+  }, []);
 
   const navigate = useNavigate();
 
@@ -179,7 +193,11 @@ function CustomerDetailsPage() {
           zIndex: "var(--mui-zIndex-fab)",
         }}
       >
-        <Fab color="error" sx={{ ml: 1 }} onClick={remove}>
+        <Fab
+          color="error"
+          sx={{ ml: 1 }}
+          onClick={handleOpenDeleteConfirmationDialog}
+        >
           <DeleteIcon />
         </Fab>
         <Fab
@@ -219,6 +237,27 @@ function CustomerDetailsPage() {
           <CalendarMonthIcon />
         </Fab>
       </Box>
+      <Dialog open={deleteConfirmationOpen}>
+        <DialogTitle>Confirmation</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to delete this customer?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => {
+              handleCloseDeleteConfirmationDialog();
+              remove();
+            }}
+          >
+            Yes
+          </Button>
+          <Button onClick={handleCloseDeleteConfirmationDialog} autoFocus>
+            No
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }
