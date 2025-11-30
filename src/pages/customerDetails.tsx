@@ -1,5 +1,6 @@
 import ArrowBack from "@mui/icons-material/ArrowBack";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import DeleteIcon from '@mui/icons-material/Delete';
 import RefreshIcon from "@mui/icons-material/Refresh";
 import SaveIcon from "@mui/icons-material/Save";
 import Box from "@mui/material/Box";
@@ -23,7 +24,7 @@ function CustomerDetailsPage() {
 
   const navigate = useNavigate();
 
-  const [save, isPending, customer, reload] = useCustomerById(
+  const [save, isPending, customer, reload, remove] = useCustomerById(
     id === null || id === undefined || isNaN(Number(id)) ? null : Number(id)
   );
 
@@ -178,6 +179,9 @@ function CustomerDetailsPage() {
           zIndex: "var(--mui-zIndex-fab)",
         }}
       >
+        <Fab color="error" sx={{ ml: 1 }} onClick={remove}>
+          <DeleteIcon />
+        </Fab>
         <Fab
           color="primary"
           sx={{ ml: 1 }}

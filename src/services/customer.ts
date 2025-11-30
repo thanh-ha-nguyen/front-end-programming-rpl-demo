@@ -74,3 +74,15 @@ export async function createOrSaveCustomer(
   const id = Number(/\/(\d+)$/.exec(_links.self.href)![1]);
   return { ...json, id };
 }
+
+export async function deleteCustomer(customerId: number): Promise<void> {
+  const response = await fetch(
+    `${import.meta.env.VITE_CUSTOMERS_API_BASE_URL}/customers/${customerId}`,
+    {
+      method: "DELETE",
+    }
+  );
+  if (!response.ok) {
+    throw new Error(await response.text());
+  }
+}

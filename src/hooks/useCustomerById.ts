@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState, useTransition } from "react";
 import { useNavigate } from "react-router";
-import { createOrSaveCustomer, loadCustomerById } from "../services";
+import { createOrSaveCustomer, deleteCustomer, loadCustomerById } from "../services";
 
 function useCustomerById(
   id: number | null
@@ -8,7 +8,8 @@ function useCustomerById(
   (value: Partial<Customer>) => void,
   boolean,
   CustomerEntity | null,
-  () => void
+  () => void,
+  () => void,
 ] {
   const navigate = useNavigate();
   const [data, setData] = useState<CustomerEntity | null>(null);
@@ -38,7 +39,18 @@ function useCustomerById(
     [id, navigate]
   );
 
-  return [save, isPending, data, reload];
+  const remove = useCallback(
+    () => {
+      startTransition(async () => {
+        if (id === null) return;
+        await deleteCustomer(id);
+        navigate("/customers");
+      });
+    },
+    [id, navigate]
+  );
+
+  return [save, isPending, data, reload, remove];
 }
 
 export default useCustomerById;
