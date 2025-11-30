@@ -4,6 +4,7 @@ import MainLayout from "./layouts/MainLayout";
 import CustomerDetailsPage from "./pages/customerDetails";
 import CustomersPage from "./pages/customers";
 import HomePage from "./pages/home";
+import NewCustomerDetailsPage from "./pages/newCustomerDetails";
 import TrainingsPage from "./pages/trainings";
 
 function App() {
@@ -13,6 +14,7 @@ function App() {
         <Route Component={MainLayout}>
           <Route index Component={HomePage} />
           <Route path="customers" Component={CustomersPage} />
+          <Route path="customers/new" Component={NewCustomerDetailsPage} />
           <Route path="customers/:id">
             <Route index Component={CustomerDetailsPage} />
             <Route path="trainings" Component={NotImplemented} />

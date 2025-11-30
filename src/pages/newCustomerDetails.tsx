@@ -1,5 +1,4 @@
 import ArrowBack from "@mui/icons-material/ArrowBack";
-import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import SaveIcon from "@mui/icons-material/Save";
 import Box from "@mui/material/Box";
@@ -7,14 +6,13 @@ import Fab from "@mui/material/Fab";
 import FormControl from "@mui/material/FormControl";
 import Input from "@mui/material/Input";
 import InputLabel from "@mui/material/InputLabel";
-import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router";
+import { useCallback, useState } from "react";
+import { useNavigate } from "react-router";
 import { useAppPageContextValue } from "../contexts/AppPageContext";
 import { useCustomerById } from "../hooks";
 
-function CustomerDetailsPage() {
-  const { id } = useParams();
-  useAppPageContextValue({ title: `CUSTOMER ${id}` });
+function NewCustomerDetailsPage() {
+  useAppPageContextValue({ title: "NEW CUSTOMER" });
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -23,23 +21,19 @@ function CustomerDetailsPage() {
   const [city, setCity] = useState("");
   const [postalCode, setPostalCode] = useState("");
 
+  const reset = useCallback(() => {
+    setFirstName("");
+    setLastName("");
+    setEmail("");
+    setPhone("");
+    setStreetAddress("");
+    setCity("");
+    setPostalCode("");
+  }, []);
+
   const navigate = useNavigate();
 
-  const [save, isPending, customer, reload] = useCustomerById(
-    id === null || id === undefined || isNaN(Number(id)) ? null : Number(id)
-  );
-
-  useEffect(() => {
-    if (customer === null) return;
-
-    setFirstName(customer.firstname);
-    setLastName(customer.lastname);
-    setEmail(customer.email);
-    setPhone(customer.phone);
-    setStreetAddress(customer.streetaddress);
-    setCity(customer.city);
-    setPostalCode(customer.postcode);
-  }, [customer]);
+  const [save, isPending] = useCustomerById(null);
 
   return (
     <Box sx={{ position: "relative", height: "100%" }}>
@@ -183,7 +177,7 @@ function CustomerDetailsPage() {
         <Fab
           color="primary"
           sx={{ ml: 1 }}
-          onClick={() =>
+          onClick={() => {
             save({
               city,
               email,
@@ -192,33 +186,17 @@ function CustomerDetailsPage() {
               phone,
               postcode: postalCode,
               streetaddress: streetAddress,
-            })
-          }
+            });
+          }}
         >
           <SaveIcon />
         </Fab>
-        <Fab color="default" sx={{ ml: 1 }} onClick={reload}>
+        <Fab color="default" sx={{ ml: 1 }} onClick={reset}>
           <RefreshIcon />
-        </Fab>
-      </Box>
-      <Box
-        sx={{
-          position: "absolute",
-          bottom: "calc(2 * var(--mui-spacing))",
-          right: "0px",
-          zIndex: "var(--mui-zIndex-fab)",
-        }}
-      >
-        <Fab
-          color="info"
-          sx={{ ml: 1 }}
-          onClick={() => navigate(`/customers/${id}/trainings`)}
-        >
-          <CalendarMonthIcon />
         </Fab>
       </Box>
     </Box>
   );
 }
 
-export default CustomerDetailsPage;
+export default NewCustomerDetailsPage;

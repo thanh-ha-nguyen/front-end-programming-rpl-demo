@@ -1,14 +1,14 @@
+interface CustomerJson extends Customer {
+  _links: {
+    self: { href: string };
+    customer: { href: string };
+    trainings: { href: string };
+  };
+}
+
 interface LoadCustomersResponseJson {
   _embedded: {
-    customers: Array<
-      Customer & {
-        _links: {
-          self: { href: string };
-          customer: { href: string };
-          trainings: { href: string };
-        };
-      }
-    >;
+    customers: Array<CustomerJson>;
   };
 }
 
@@ -39,14 +39,16 @@ export async function loadCustomerById(id: number): Promise<CustomerEntity> {
   return await response.json();
 }
 
-export async function saveOrCreateCustomer(
-  id: number | null,
+export async function createOrSaveCustomer(
+  customerId: number | null,
   data: Partial<Customer>
 ): Promise<CustomerEntity> {
   const response =
-    id !== null
+    customerId !== null
       ? await fetch(
-          `${import.meta.env.VITE_CUSTOMERS_API_BASE_URL}/customers/${id}`,
+          `${
+            import.meta.env.VITE_CUSTOMERS_API_BASE_URL
+          }/customers/${customerId}`,
           {
             method: "PUT",
             body: JSON.stringify(data),
@@ -68,5 +70,7 @@ export async function saveOrCreateCustomer(
   if (!response.ok) {
     throw new Error(await response.text());
   }
-  return await response.json();
+  const { _links, ...json } = (await response.json()) as CustomerJson;
+  const id = Number(/\/(\d+)$/.exec(_links.self.href)![1]);
+  return { ...json, id };
 }

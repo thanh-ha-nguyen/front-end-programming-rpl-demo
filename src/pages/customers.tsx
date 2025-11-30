@@ -9,6 +9,7 @@ import OutlinedInput from "@mui/material/OutlinedInput";
 import Paper from "@mui/material/Paper";
 import type React from "react";
 import { useCallback, useState } from "react";
+import { useNavigate } from "react-router";
 import CustomersList from "../components/CustomersList";
 import { useAppPageContextValue } from "../contexts/AppPageContext";
 import { useCustomers } from "../hooks";
@@ -16,6 +17,7 @@ import { useCustomers } from "../hooks";
 function CustomersPage() {
   useAppPageContextValue({ title: "CUSTOMERS" });
 
+  const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const [customers, onSort] = useCustomers(search);
 
@@ -51,6 +53,7 @@ function CustomersPage() {
           left: "50%",
           transform: "translateX(-50%)",
         }}
+        onClick={() => navigate("/customers/new")}
       >
         <AddIcon />
       </Fab>
