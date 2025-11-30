@@ -36,6 +36,16 @@ function CustomerDetailsPage() {
     setDeleteConfirmationOpen(false);
   }, []);
 
+  const [dirty, setDirty] = useState(false);
+
+  const [saveConfirmationOpen, setSaveConfirmationOpen] = useState(false);
+  const handleOpenSaveConfirmationDialog = useCallback(() => {
+    setSaveConfirmationOpen(true);
+  }, []);
+  const handleCloseSaveConfirmationDialog = useCallback(() => {
+    setSaveConfirmationOpen(false);
+  }, []);
+
   const navigate = useNavigate();
 
   const [save, isPending, customer, reload, remove] = useCustomerById(
@@ -70,7 +80,10 @@ function CustomerDetailsPage() {
             <Input
               id="firstName"
               value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
+              onChange={(e) => {
+                setFirstName(e.target.value);
+                setDirty(true);
+              }}
               readOnly={isPending}
               inputProps={{
                 style: {
@@ -85,7 +98,10 @@ function CustomerDetailsPage() {
             <Input
               id="lastName"
               value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
+              onChange={(e) => {
+                setLastName(e.target.value);
+                setDirty(true);
+              }}
               readOnly={isPending}
               inputProps={{
                 style: {
@@ -100,7 +116,10 @@ function CustomerDetailsPage() {
             <Input
               id="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                setDirty(true);
+              }}
               readOnly={isPending}
               inputProps={{
                 style: {
@@ -115,7 +134,10 @@ function CustomerDetailsPage() {
             <Input
               id="phone"
               value={phone}
-              onChange={(e) => setPhone(e.target.value)}
+              onChange={(e) => {
+                setPhone(e.target.value);
+                setDirty(true);
+              }}
               readOnly={isPending}
               inputProps={{
                 style: {
@@ -130,7 +152,10 @@ function CustomerDetailsPage() {
             <Input
               id="streetAddress"
               value={streetAddress}
-              onChange={(e) => setStreetAddress(e.target.value)}
+              onChange={(e) => {
+                setStreetAddress(e.target.value);
+                setDirty(true);
+              }}
               readOnly={isPending}
               inputProps={{
                 style: {
@@ -145,7 +170,10 @@ function CustomerDetailsPage() {
             <Input
               id="city"
               value={city}
-              onChange={(e) => setCity(e.target.value)}
+              onChange={(e) => {
+                setCity(e.target.value);
+                setDirty(true);
+              }}
               readOnly={isPending}
               inputProps={{
                 style: {
@@ -160,7 +188,10 @@ function CustomerDetailsPage() {
             <Input
               id="postalCode"
               value={postalCode}
-              onChange={(e) => setPostalCode(e.target.value)}
+              onChange={(e) => {
+                setPostalCode(e.target.value);
+                setDirty(true);
+              }}
               readOnly={isPending}
               inputProps={{
                 style: {
@@ -180,7 +211,16 @@ function CustomerDetailsPage() {
           zIndex: "var(--mui-zIndex-fab)",
         }}
       >
-        <Fab color="default" onClick={() => navigate("/customers")}>
+        <Fab
+          color="default"
+          onClick={() => {
+            if (dirty) {
+              handleOpenSaveConfirmationDialog();
+            } else {
+              navigate("/customers");
+            }
+          }}
+        >
           <ArrowBack />
         </Fab>
       </Box>
@@ -203,7 +243,7 @@ function CustomerDetailsPage() {
         <Fab
           color="primary"
           sx={{ ml: 1 }}
-          onClick={() =>
+          onClick={() => {
             save({
               city,
               email,
@@ -212,12 +252,20 @@ function CustomerDetailsPage() {
               phone,
               postcode: postalCode,
               streetaddress: streetAddress,
-            })
-          }
+            });
+            setDirty(false);
+          }}
         >
           <SaveIcon />
         </Fab>
-        <Fab color="default" sx={{ ml: 1 }} onClick={reload}>
+        <Fab
+          color="default"
+          sx={{ ml: 1 }}
+          onClick={() => {
+            reload();
+            setDirty(false);
+          }}
+        >
           <RefreshIcon />
         </Fab>
       </Box>
@@ -232,7 +280,13 @@ function CustomerDetailsPage() {
         <Fab
           color="info"
           sx={{ ml: 1 }}
-          onClick={() => navigate(`/customers/${id}/trainings`)}
+          onClick={() => {
+            if (dirty) {
+              handleOpenSaveConfirmationDialog();
+            } else {
+              navigate(`/customers/${id}/trainings`);
+            }
+          }}
         >
           <CalendarMonthIcon />
         </Fab>
@@ -256,6 +310,35 @@ function CustomerDetailsPage() {
           <Button onClick={handleCloseDeleteConfirmationDialog} autoFocus>
             No
           </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog open={saveConfirmationOpen}>
+        <DialogTitle>Confirmation</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            There are unsaved changes. Do you want to save?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => {
+              handleCloseSaveConfirmationDialog();
+              save({
+                city,
+                email,
+                firstname: firstName,
+                lastname: lastName,
+                phone,
+                postcode: postalCode,
+                streetaddress: streetAddress,
+              });
+              setDirty(false);
+            }}
+            autoFocus
+          >
+            Yes
+          </Button>
+          <Button onClick={handleCloseSaveConfirmationDialog}>No</Button>
         </DialogActions>
       </Dialog>
     </Box>
