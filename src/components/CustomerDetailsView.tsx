@@ -17,7 +17,7 @@ function CustomerDetailsView() {
   const [streetAddress, setStreetAddress] = useState("");
   const [city, setCity] = useState("");
   const [postalCode, setPostalCode] = useState("");
-  
+
   const onLoaded = useCallback((customer: CustomerEntity) => {
     setFirstName(customer.city);
     setLastName(customer.lastname);
@@ -44,6 +44,12 @@ function CustomerDetailsView() {
           id="firstName"
           value={firstName}
           onChange={(e) => setFirstName(e.target.value)}
+          inputProps={{
+            style: {
+              marginInlineStart: "14px",
+              marginInlineEnd: "14px",
+            },
+          }}
         />
       </FormControl>
       <FormControl sx={{ flexBasis: "calc(50% - var(--mui-spacing))" }}>
@@ -52,6 +58,12 @@ function CustomerDetailsView() {
           id="lastName"
           value={lastName}
           onChange={(e) => setLastName(e.target.value)}
+          inputProps={{
+            style: {
+              marginInlineStart: "14px",
+              marginInlineEnd: "14px",
+            },
+          }}
         />
       </FormControl>
       <FormControl sx={{ flexBasis: "calc(50% - var(--mui-spacing))" }}>
@@ -60,6 +72,12 @@ function CustomerDetailsView() {
           id="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          inputProps={{
+            style: {
+              marginInlineStart: "14px",
+              marginInlineEnd: "14px",
+            },
+          }}
         />
       </FormControl>
       <FormControl sx={{ flexBasis: "calc(50% - var(--mui-spacing))" }}>
@@ -68,6 +86,12 @@ function CustomerDetailsView() {
           id="phone"
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
+          inputProps={{
+            style: {
+              marginInlineStart: "14px",
+              marginInlineEnd: "14px",
+            },
+          }}
         />
       </FormControl>
       <FormControl sx={{ flexBasis: "100%" }}>
@@ -76,6 +100,12 @@ function CustomerDetailsView() {
           id="streetAddress"
           value={streetAddress}
           onChange={(e) => setStreetAddress(e.target.value)}
+          inputProps={{
+            style: {
+              marginInlineStart: "14px",
+              marginInlineEnd: "14px",
+            },
+          }}
         />
       </FormControl>
       <FormControl sx={{ flexBasis: "calc(50% - var(--mui-spacing))" }}>
@@ -84,6 +114,12 @@ function CustomerDetailsView() {
           id="city"
           value={city}
           onChange={(e) => setCity(e.target.value)}
+          inputProps={{
+            style: {
+              marginInlineStart: "14px",
+              marginInlineEnd: "14px",
+            },
+          }}
         />
       </FormControl>
       <FormControl sx={{ flexBasis: "calc(50% - var(--mui-spacing))" }}>
@@ -92,6 +128,12 @@ function CustomerDetailsView() {
           id="postalCode"
           value={postalCode}
           onChange={(e) => setPostalCode(e.target.value)}
+          inputProps={{
+            style: {
+              marginInlineStart: "14px",
+              marginInlineEnd: "14px",
+            },
+          }}
         />
       </FormControl>
     </Box>
