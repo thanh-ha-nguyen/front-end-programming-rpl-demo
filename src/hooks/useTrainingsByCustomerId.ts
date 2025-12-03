@@ -1,15 +1,23 @@
 import { useCallback, useEffect, useState, useTransition } from "react";
-import { loadTrainingsByCustomerId } from "../services";
+import {
+  addTraining,
+  loadTrainingsByCustomerId,
+  removeTraining,
+} from "../services";
 
 function useTrainingsByCustomerId(
-  customerId: number | null,
-  search: string = ""
-): [Array<TrainingEntity>, () => void, boolean] {
+  customerId: number | null
+): [
+  Array<TrainingEntity>,
+  (value: Partial<Training>) => void,
+  (trainingId: number) => void,
+  () => void,
+  boolean
+] {
   const [data, setData] = useState<Array<TrainingEntity>>([]);
-  const [filteredData, setFilteredData] = useState<Array<TrainingEntity>>([]);
   const [isPending, startTransition] = useTransition();
 
-  useEffect(() => {
+  const reload = useCallback(() => {
     if (customerId === null) return;
 
     startTransition(async () => {
@@ -17,41 +25,33 @@ function useTrainingsByCustomerId(
     });
   }, [customerId]);
 
-  const sort = useCallback(() => {
-    setData((data) =>
-      data.slice(0).sort((first, second) => {
-        const firstFullName = `${first.customer?.firstname} ${first.customer?.lastname}`;
-        const secondFullName = `${second.customer?.firstname} ${second.customer?.lastname}`;
-        return firstFullName.localeCompare(secondFullName);
-      })
-    );
-  }, []);
-
   useEffect(() => {
-    setFilteredData(
-      search.trim().length === 0
-        ? data
-        : data.filter((row) =>
-            search
-              .split(/\s+/)
-              .filter((searchTerm) => searchTerm.length > 0)
-              .some(
-                (searchTerm) =>
-                  row.activity?.toLowerCase().includes(searchTerm) ||
-                  row.customer?.firstname
-                    ?.toLowerCase()
-                    .startsWith(searchTerm) ||
-                  row.customer?.lastname
-                    ?.toLowerCase()
-                    .startsWith(searchTerm) ||
-                  row.customer?.email?.toLowerCase().includes(searchTerm) ||
-                  row.customer?.phone?.toLowerCase().includes(searchTerm)
-              )
-          )
-    );
-  }, [search, data]);
+    reload();
+  }, [reload]);
 
-  return [filteredData, sort, isPending];
+  const add = useCallback(
+    async (value: Partial<Training>) => {
+      if (customerId === null) return;
+
+      startTransition(async () => {
+        await addTraining(customerId, value);
+        reload();
+      });
+    },
+    [customerId, reload]
+  );
+
+  const remove = useCallback(
+    async (trainingId: number) => {
+      startTransition(async () => {
+        await removeTraining(trainingId);
+        reload();
+      });
+    },
+    [reload]
+  );
+
+  return [data, add, remove, reload, isPending];
 }
 
 export default useTrainingsByCustomerId;
