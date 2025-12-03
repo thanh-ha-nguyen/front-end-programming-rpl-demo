@@ -3,6 +3,11 @@ import FormControl from "@mui/material/FormControl";
 import Input from "@mui/material/Input";
 import InputAdornment from "@mui/material/InputAdornment";
 import InputLabel from "@mui/material/InputLabel";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import type { Dayjs } from "dayjs";
+import dayjs from "dayjs";
 import React, { useEffect, useState } from "react";
 
 interface TrainingEditViewProps {
@@ -16,23 +21,23 @@ const TrainingEditView: React.FC<TrainingEditViewProps> = ({
   value,
   onChange,
 }) => {
-  const [date, setDate] = useState(value?.date || new Date());
+  const [date, setDate] = useState<Dayjs | null>(dayjs(value?.date) || dayjs());
   const [activity, setActivity] = useState(value?.activity || "");
   const [duration, setDuration] = useState(value?.duration || 30);
 
   useEffect(() => {
-    setDate(value.date || new Date());
+    setDate(dayjs(value.date));
     setActivity(value.activity || "");
     setDuration(value.duration || 30);
   }, [value]);
 
   return (
-    <Box sx={{ height: "100%", overflow: "auto" }}>
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
       <Box
         sx={{
+          height: "100%",
           display: "flex",
           flexWrap: "wrap",
-          alignContent: "space-between",
           gap: 2,
           mt: 2,
         }}
@@ -54,27 +59,27 @@ const TrainingEditView: React.FC<TrainingEditViewProps> = ({
             autoFocus
           />
         </FormControl>
-        <FormControl sx={{ flexBasis: "calc(50% - var(--mui-spacing))" }}>
-          <InputLabel htmlFor="date">Start time</InputLabel>
-          <Input
-            id="date"
-            value={date}
-            onChange={(e) => setDate(new Date(e.target.value))}
-            onBlur={() => onChange?.({ date })}
-            readOnly={readonly}
-            inputProps={{
-              style: {
-                marginInlineStart: "14px",
-                marginInlineEnd: "14px",
+        <DateTimePicker
+          label="Start time"
+          slotProps={{
+            textField: {
+              variant: "standard",
+              onBlur: () => {
+                onChange?.({ date: date?.toDate() });
               },
-            }}
-          />
-        </FormControl>
+            },
+          }}
+          sx={{ mr: "auto" }}
+          value={date}
+          onChange={(value) => setDate(value)}
+        />
         <FormControl sx={{ flexBasis: "calc(50% - var(--mui-spacing))" }}>
           <InputLabel htmlFor="duration">Duration</InputLabel>
           <Input
             id="duration"
-            endAdornment={<InputAdornment position="end">minute(s)</InputAdornment>}
+            endAdornment={
+              <InputAdornment position="end">minute(s)</InputAdornment>
+            }
             value={duration}
             onChange={(e) => setDuration(Number.parseInt(e.target.value))}
             onBlur={() => onChange?.({ duration })}
@@ -88,7 +93,7 @@ const TrainingEditView: React.FC<TrainingEditViewProps> = ({
           />
         </FormControl>
       </Box>
-    </Box>
+    </LocalizationProvider>
   );
 };
 
