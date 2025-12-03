@@ -22,5 +22,5 @@ interface Training {
 }
 
 interface TrainingEntity extends Entity, Training {
-  customer: CustomerEntity;
+  customer: CustomerEntity | null;
 }

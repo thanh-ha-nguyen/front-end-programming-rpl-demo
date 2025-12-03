@@ -27,13 +27,17 @@ import SpeedDialIcon from "@mui/material/SpeedDialIcon";
 import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import NotImplemented from "../components/NotImplemented";
-import { useCustomerById } from "../hooks";
+import { useCustomerById, useTrainingsByCustomerId } from "../hooks";
 import "./customerDetails.css";
 
 type CurrentView = "basicInfo" | "trainings" | "statistics";
 
 function CustomerDetailsPage() {
-  const { id } = useParams();
+  const { id: idParam } = useParams();
+  const id =
+    idParam === null || idParam === undefined || isNaN(Number(idParam))
+      ? null
+      : Number(idParam);
 
   const [currentView, setCurrentView] = useState<CurrentView>("basicInfo");
 
@@ -57,15 +61,15 @@ function CustomerDetailsPage() {
 
   const navigate = useNavigate();
 
-  const [save, isPending, customer, reload, remove] = useCustomerById(
-    id === null || id === undefined || isNaN(Number(id)) ? null : Number(id)
-  );
+  const [save, isPending, customer, reload, remove] = useCustomerById(id);
   const [customerEditState, setCustomerEditState] =
     useState<Partial<Customer> | null>(customer);
   useEffect(() => {
     setCustomerEditState(customer);
     setDirty(false);
   }, [customer]);
+
+  const [trainings] = useTrainingsByCustomerId(id);
 
   return (
     <Box sx={{ position: "relative", height: "100%" }}>
@@ -89,6 +93,12 @@ function CustomerDetailsPage() {
             right: "dayGridYear,timeGridWeek,timeGridDay",
           }}
           selectable
+          events={trainings.map(({ id, activity, date, duration }) => ({
+            id: String(id),
+            title: activity,
+            start: date,
+            end: new Date(date.getTime() + duration * 60 * 1000),
+          }))}
         />
       )}
       {currentView === "statistics" && <NotImplemented />}

@@ -14,7 +14,7 @@ interface LoadCustomersResponseJson {
 
 export async function loadCustomers(): Promise<Array<CustomerEntity>> {
   const response = await fetch(
-    `${import.meta.env.VITE_CUSTOMERS_API_BASE_URL}/customers`
+    `${import.meta.env.VITE_API_BASE_URL}/customers`
   );
   if (!response.ok) {
     throw new Error(await response.text());
@@ -31,7 +31,7 @@ export async function loadCustomers(): Promise<Array<CustomerEntity>> {
 
 export async function loadCustomerById(id: number): Promise<CustomerEntity> {
   const response = await fetch(
-    `${import.meta.env.VITE_CUSTOMERS_API_BASE_URL}/customers/${id}`
+    `${import.meta.env.VITE_API_BASE_URL}/customers/${id}`
   );
   if (!response.ok) {
     throw new Error(await response.text());
@@ -46,9 +46,7 @@ export async function createOrSaveCustomer(
   const response =
     customerId !== null
       ? await fetch(
-          `${
-            import.meta.env.VITE_CUSTOMERS_API_BASE_URL
-          }/customers/${customerId}`,
+          `${import.meta.env.VITE_API_BASE_URL}/customers/${customerId}`,
           {
             method: "PUT",
             body: JSON.stringify(data),
@@ -57,16 +55,13 @@ export async function createOrSaveCustomer(
             },
           }
         )
-      : await fetch(
-          `${import.meta.env.VITE_CUSTOMERS_API_BASE_URL}/customers`,
-          {
-            method: "POST",
-            body: JSON.stringify(data),
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
+      : await fetch(`${import.meta.env.VITE_API_BASE_URL}/customers`, {
+          method: "POST",
+          body: JSON.stringify(data),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
   if (!response.ok) {
     throw new Error(await response.text());
   }
@@ -77,7 +72,7 @@ export async function createOrSaveCustomer(
 
 export async function deleteCustomer(customerId: number): Promise<void> {
   const response = await fetch(
-    `${import.meta.env.VITE_CUSTOMERS_API_BASE_URL}/customers/${customerId}`,
+    `${import.meta.env.VITE_API_BASE_URL}/customers/${customerId}`,
     {
       method: "DELETE",
     }
