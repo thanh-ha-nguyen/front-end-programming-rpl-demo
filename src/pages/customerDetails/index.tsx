@@ -16,7 +16,7 @@ import Input from "@mui/material/Input";
 import InputLabel from "@mui/material/InputLabel";
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
-import { useCustomerById } from "../hooks";
+import { useCustomerById } from "../../hooks";
 
 function CustomerDetailsPage() {
   const { id } = useParams();

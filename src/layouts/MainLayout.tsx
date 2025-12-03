@@ -40,7 +40,7 @@ function MainLayout() {
         }}
       >
         <DefaultAppBar />
-        <Container sx={{ flexGrow: 1, my: 1 }}>
+        <Container sx={{ flexGrow: 1, my: 1, overflow: "hidden" }}>
           <Outlet />
         </Container>
       </Container>
